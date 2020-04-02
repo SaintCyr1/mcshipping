@@ -27,7 +27,7 @@
 if (!defined('_PS_VERSION_')) {
     exit;
 }
-require_once dirname(__FILE__) . '/classes/McConfiguration.php';
+require_once 'classes/McConfiguration.php';
 class Mcshipping extends CarrierModule
 {
     protected $config_form = false;
@@ -102,7 +102,7 @@ class Mcshipping extends CarrierModule
         $state_abidjan_id = McConfiguration::getStateByName("Abidjan");
         if(!empty($state_abidjan_id)){
             foreach ($communes_abidjan as $commune) {
-                $city->addCity($state_abidjan_id[0]['is_state'],$country[0]['id_country'],$zone[0]['id_zone'],$commune);
+                $state->addCity($state_abidjan_id[0]['id_state'],$country[0]['id_country'],$zone[0]['id_zone'],$commune);
             }
         }
         
@@ -186,7 +186,7 @@ class Mcshipping extends CarrierModule
             'form' => array(
                 'legend' => array(
                 'title' => $this->l('Paramétrages des prix'),
-                'icon' => 'icon-cogs',
+                'icon' => 'icon-cogs'
                 ),
                 'input' => array(
                     array(
@@ -217,7 +217,9 @@ class Mcshipping extends CarrierModule
                         'label' => $this->l('Region'),
                         'required' => true,
                         'options' => array(
-                            'query' => $options = $states,
+                            'query' => $options = $states
+                        )
+                    ),
                     array(
                         'col' => 6,
                         'type' => 'select',
@@ -268,9 +270,9 @@ class Mcshipping extends CarrierModule
                         'required' => true
                     )
                 ),
-                'description' => "Saisir les prix selon le format de l'article dans les champs ci-dessous",
                 'submit' => array(
                     'title' => $this->l('Save'),
+                    'class' => 'btn btn-primary'
                 ),
             ),
         );

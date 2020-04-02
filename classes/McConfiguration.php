@@ -8,9 +8,13 @@ class McConfiguration {
         $iso_code = strtoupper($firstc.$lastc);
         $sql = 'INSERT INTO  `'. _DB_PREFIX_.'state`(`id_country`,`id_zone`,`name`,`iso_code`) VALUES ("'.$id_country.'","'.$id_zone.'","'.$name.'","'.$iso_code.'")';
 
-        $insert = Db::getInstance(_PS_USE_SQL_SLAVE_)->execute($sql) ? (int)Db::getInstance()->Insert_ID() : false;
+        return Db::getInstance(_PS_USE_SQL_SLAVE_)->execute($sql);
+    }
 
-        return $insert;
+    public function addCity($id_state,$id_country,$id_zone,$name){
+        $sql = 'INSERT INTO  `'. _DB_PREFIX_.'mccity`(`id_state`,`id_country`,`id_zone`,`name`) VALUES ("'.$id_state.'","'.$id_country.'","'.$id_zone.'","'.$name.'")';
+
+        return Db::getInstance(_PS_USE_SQL_SLAVE_)->execute($sql);
     }
 
     public static function getZoneByName($name){
