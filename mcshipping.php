@@ -154,7 +154,7 @@ class Mcshipping extends CarrierModule
     /**
      * Create the structure of your form.
      */
-   protected function getConfigForm()
+    protected function getConfigForm()
     {
         return array(
             'form' => array(
@@ -347,7 +347,7 @@ class Mcshipping extends CarrierModule
         $groups_ids = array();
         $groups = Group::getGroups(Context::getContext()->language->id);
         foreach ($groups as $group)
-            if($group['name'] == "Customer"){
+            if($group['name'] == "Customer" || $group['name'] == "Client"){
                 $groups_ids[] = $group['id_group'];
             }
         $carrier->setGroups($groups_ids);
