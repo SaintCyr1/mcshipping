@@ -27,7 +27,7 @@
 if (!defined('_PS_VERSION_')) {
     exit;
 }
-
+require_once dirname(__FILE__) . '/classes/McConfiguration.php';
 class Mcshipping extends CarrierModule
 {
     protected $config_form = false;
@@ -88,6 +88,24 @@ class Mcshipping extends CarrierModule
             $this->addZones($carrier);
             $this->addGroups($carrier);
         }
+
+        $country = McConfiguration::getCountryByCode("CI");
+        $zone = McConfiguration::getZoneByName("Africa");
+        $states = ['Abidjan','Grand Abidjan','Interieur'];
+        $communes_abidjan = ["abobo","cocody","yopougon","koumassi","angré","marcory","riviera","treichville","plateau","attécoubé","port bouet"];
+        $state = new McConfiguration();
+
+        foreach ($states as $s) {
+            $state->addState($s,$zone[0]['id_zone'],$country[0]['id_country']);
+        }
+
+        $state_abidjan_id = McConfiguration::getStateByName("Abidjan");
+        if(!empty($state_abidjan_id)){
+            foreach ($communes_abidjan as $commune) {
+                $city->addCity($state_abidjan_id[0]['is_state'],$country[0]['id_country'],$zone[0]['id_zone'],$commune);
+            }
+        }
+        
 
         return parent::install() &&
             $this->registerHook('header') &&
@@ -156,10 +174,18 @@ class Mcshipping extends CarrierModule
      */
     protected function getConfigForm()
     {
+        $states = McConfiguration::getStateByCountry("CI");
+
+        if(empty($states)){
+            $states = [[
+                'id_option' => '0',
+                'name' => 'Aucune région trouvée'
+            ]];
+        }
         return array(
             'form' => array(
                 'legend' => array(
-                'title' => $this->l('Config'),
+                'title' => $this->l('Paramétrages des prix'),
                 'icon' => 'icon-cogs',
                 ),
                 'input' => array(
@@ -168,6 +194,7 @@ class Mcshipping extends CarrierModule
                         'type' => 'select',
                         'name' => 'MCSHIPPING_TYPE_ARTICLE',
                         'label' => $this->l('Type d\'article'),
+                        'required' => true,
                         'options' => array(
                             'query' => $options = array(
                                 array(
@@ -188,30 +215,15 @@ class Mcshipping extends CarrierModule
                         'type' => 'select',
                         'name' => 'MCSHIPPING_REGION',
                         'label' => $this->l('Region'),
+                        'required' => true,
                         'options' => array(
-                            'query' => $options = array(
-                                array(
-                                    'id_option' => 'abidjan',
-                                    'name' => 'Abidjan'
-                                ),
-                                array(
-                                    'id_option' => 'grand_abidjan',
-                                    'name' => 'Grand Abidjan'
-                                ),
-                                array(
-                                    'id_option' => 'interieur',
-                                    'name' => 'Interieur'
-                                )
-                            ),
-                            'id' => 'id_option',
-                            'name' => 'name'
-                        )
-                    ),
+                            'query' => $options = $states,
                     array(
                         'col' => 6,
                         'type' => 'select',
                         'name' => 'MCSHIPPING_MODE',
                         'label' => $this->l('Mode de livraison'),
+                        'required' => true,
                         'options' => array(
                             'query' => $options = array(
                                 array(
@@ -234,20 +246,26 @@ class Mcshipping extends CarrierModule
                     array(
                         'col' => 3,
                         'type' => 'text',
+                        'class' => 'form-control',
                         'name' => 'MCSHIPPING_FORMAT_PETIT',
-                        'label' => $this->l('Petit')
+                        'label' => $this->l('Petit'),
+                        'required' => true
                     ),
                     array(
                         'col' => 3,
                         'type' => 'text',
+                        'class' => 'form-control',
                         'name' => 'MCSHIPPING_FORMAT_MOYEN',
-                        'label' => $this->l('Moyen')
+                        'label' => $this->l('Moyen'),
+                        'required' => true
                     ),
                     array(
                         'col' => 3,
                         'type' => 'text',
+                        'class' => 'form-control',
                         'name' => 'MCSHIPPING_FORMAT_GRAND',
-                        'label' => $this->l('Grand')
+                        'label' => $this->l('Grand'),
+                        'required' => true
                     )
                 ),
                 'description' => "Saisir les prix selon le format de l'article dans les champs ci-dessous",
