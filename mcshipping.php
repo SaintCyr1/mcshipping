@@ -71,15 +71,15 @@ class Mcshipping extends CarrierModule
 
         $carriers = [
             [
-                'name' => 'Livraison Standard',
+                'name' => 'Monconfort Standard',
                 'description' => 'Livraison à domicile en 2 ou 3 jours'
             ],
             [
-                'name' => 'Livraison Monconfort',
+                'name' => 'Monconfort Relais',
                 'description' => 'Retrait de colis en point relais'
             ],
             [
-                'name' => 'Livraison Express',
+                'name' => 'Monconfort Express',
                 'description' => 'Livraison de votre colis en 4h'
             ]
         ];
