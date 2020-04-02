@@ -217,7 +217,9 @@ class Mcshipping extends CarrierModule
                         'label' => $this->l('Region'),
                         'required' => true,
                         'options' => array(
-                            'query' => $options = $states
+                            'query' => $options = $states,
+                            'id' => 'id_option',
+                            'name' => 'name'
                         )
                     ),
                     array(
