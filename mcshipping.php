@@ -98,6 +98,8 @@ class Mcshipping extends CarrierModule
     public function uninstall()
     {
         require 'sql/uninstall.php';
+        //Suppression des transporteurs crées
+        require 'sql/uninstallCarrierCreated.php';
 
         return parent::uninstall();
     }
