@@ -5,7 +5,7 @@ $sql = array();
 $sql[] = 'UPDATE `'._DB_PREFIX_.'carrier`
             SET `deleted` = 1 
             WHERE `deleted` = 0
-            AND `external_module_name` = `id_mcshipping`';
+            AND `external_module_name` = "mcshipping"';
 
 $sql[] = 'DELETE FROM `'._DB_PREFIX_.'carrier_zone`
             WHERE `id_carrier` 
