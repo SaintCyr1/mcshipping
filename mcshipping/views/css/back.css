@@ -1,4 +1,4 @@
-{*
+/**
 * 2007-2020 PrestaShop
 *
 * NOTICE OF LICENSE
@@ -21,14 +21,7 @@
 *  @copyright 2007-2020 PrestaShop SA
 *  @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
 *  International Registered Trademark & Property of PrestaShop SA
-*}
-
-<div class="panel">
-	<h3><i class="icon icon-truck"></i> {l s='Frais de livraison MONCONFORT' mod='mcshipping'}</h3>
-	<img src="{$module_dir|escape:'html':'UTF-8'}/logo.png" id="payment-logo" class="pull-right" />
-	<p>
-		<strong>{l s='Nouveau module !' mod='mcshipping'}</strong><br />
-		{l s='Configurer le module en utilisant le formulaire ci-dessous' mod='mcshipping'}
-	</p>
-	<br />
-</div>
+*
+* Don't forget to prefix your containers with your own identifier
+* to avoid any conflicts with others containers.
+*/

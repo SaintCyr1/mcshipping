@@ -31,6 +31,18 @@
  */
 $sql = array();
 
+//Suppression de la table mcshipping
+$sql[] = 'DROP TABLE IF EXISTS `'._DB_PREFIX_.'mcshipping`';
+//Suppression de la table mcshipping_lang
+$sql[] = 'DROP TABLE IF EXISTS `'._DB_PREFIX_.'mcshipping_lang`';
+//Suppression de la table mccity
+$sql[] = 'DROP TABLE IF EXISTS `'._DB_PREFIX_.'mccity`';
+//Suppression des columns id_city et id_state de la table address
+$sql[] = 'ALTER TABLE `'._DB_PREFIX_.'address`
+            DROP IF EXISTS id_city';
+//Suppression de la valeur par défaut de alias de la table address
+$sql[] = 'ALTER TABLE `'._DB_PREFIX_.'address` ALTER alias DROP DEFAULT';
+
 foreach ($sql as $query) {
     if (Db::getInstance()->execute($query) == false) {
         return false;

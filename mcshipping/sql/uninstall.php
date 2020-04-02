@@ -1,4 +1,5 @@
-{*
+<?php
+/**
 * 2007-2020 PrestaShop
 *
 * NOTICE OF LICENSE
@@ -21,14 +22,30 @@
 *  @copyright 2007-2020 PrestaShop SA
 *  @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
 *  International Registered Trademark & Property of PrestaShop SA
-*}
+*/
 
-<div class="panel">
-	<h3><i class="icon icon-truck"></i> {l s='Frais de livraison MONCONFORT' mod='mcshipping'}</h3>
-	<img src="{$module_dir|escape:'html':'UTF-8'}/logo.png" id="payment-logo" class="pull-right" />
-	<p>
-		<strong>{l s='Nouveau module !' mod='mcshipping'}</strong><br />
-		{l s='Configurer le module en utilisant le formulaire ci-dessous' mod='mcshipping'}
-	</p>
-	<br />
-</div>
+/**
+ * In some cases you should not drop the tables.
+ * Maybe the merchant will just try to reset the module
+ * but does not want to loose all of the data associated to the module.
+ */
+$sql = array();
+
+//Suppression de la table mcshipping
+$sql[] = 'DROP TABLE IF EXISTS `'._DB_PREFIX_.'mcshipping`';
+//Suppression de la table mcshipping_lang
+$sql[] = 'DROP TABLE IF EXISTS `'._DB_PREFIX_.'mcshipping_lang`';
+//Suppression de la table mccity
+$sql[] = 'DROP TABLE IF EXISTS `'._DB_PREFIX_.'mccity`';
+//Suppression des columns id_city et id_state de la table address
+$sql[] = 'ALTER TABLE `'._DB_PREFIX_.'mcshipping`
+            DROP IF EXISTS id_city,
+            DROP IF EXISTS id_state';
+//Suppression de la valeur par défaut de alias de la table address
+$sql[] = 'ALTER TABLE `'._DB_PREFIX_.'mcshipping` ALTER alias DROP DEFAULT';
+
+foreach ($sql as $query) {
+    if (Db::getInstance()->execute($query) == false) {
+        return false;
+    }
+}
