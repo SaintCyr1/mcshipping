@@ -2,7 +2,6 @@
 
 $sql = array();
 
-
 $sql[] = 'UPDATE `'._DB_PREFIX_.'carrier`
             SET `deleted` = 1 
             WHERE `deleted` = 0
@@ -16,3 +15,9 @@ $sql[] = 'DELETE FROM `'._DB_PREFIX_.'carrier_zone`
                 WHERE `name` 
                 IN ("Livraison Standard","Livraison Monconfort","Livraison Express") 
                 AND `deleted` = 0)';
+
+foreach ($sql as $query) {
+    if (Db::getInstance()->execute($query) == false) {
+        return false;
+    }
+}
