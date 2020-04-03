@@ -110,7 +110,84 @@ class Mcshipping extends CarrierModule
         return parent::install() &&
             $this->registerHook('header') &&
             $this->registerHook('backOfficeHeader') &&
-            $this->registerHook('updateCarrier');
+            $this->registerHook('updateCarrier') &&
+            $this->installTab();
+    }
+
+    public function installTab(){
+
+        $languages = Language::getLanguages();
+
+        $admin_menus = $this->getAdminMenus();
+
+        foreach ($admin_menus as $menu) {
+            $id_parent_tab = (int) Tab::getIdFromClassName($menu['parent']);
+            $tab = new Tab();
+            $tab->class_name = $menu['class_name'];
+            $tab->module = $this->name;
+            $tab->active = $menu['active'];
+            $tab->id_parent = $id_parent_tab;
+            foreach ($languages as $lang) {
+                if (isset($menu['name'][$lang['iso_code']])) {
+                    $tab->name[$lang['id_lang']] = $menu['name'][$lang['iso_code']];
+                } else {
+                    $tab->name[$lang['id_lang']] = $menu['name']['en'];
+                }
+            }
+            $tab->save();
+        }
+        return true;
+    }
+
+    private function getAdminMenus()
+    {
+        return array(
+            array(
+                'class_name' => 'AdminMcShippingParent',
+                'active' => 1,
+                'name' => array(
+                    'en' => 'Shipping Cost Management',
+                    'fr' => 'Gestion de frais de livraison',
+                ),
+                'parent' => '',
+                'icon' => 'icon-shipping'
+            ),
+            array(
+                'class_name' => 'AdminMcShippingSetting',
+                'active' => 1,
+                'name' => array(
+                    'en' => 'Settings',
+                    'fr' => 'Paramétrages',
+                ),
+                'parent' => 'AdminMcShippingParent'
+            ),
+            array(
+                'class_name' => 'AdminMcShippingListing',
+                'active' => 1,
+                'name' => array(
+                    'en' => 'Price Listing',
+                    'fr' => 'Liste des prix',
+                ),
+                'parent' => 'AdminMcShippingParent'
+            )
+        );
+    }
+
+    protected function unInstallTab(){
+        $parentTab = new Tab(Tab::getIdFromClassName('AdminMcShippingParent'));
+        $parentTab->delete();
+
+        $admin_menus = $this->getAdminMenus();
+
+        foreach ($admin_menus as $menu) {
+            $sql = 'SELECT id_tab FROM `' . _DB_PREFIX_ . 'tab` Where class_name = "' . pSQL($menu['class_name']) . '" 
+				AND module = "' . pSQL($this->name) . '"';
+            $id_tab = Db::getInstance(_PS_USE_SQL_SLAVE_)->getValue($sql);
+            $tab = new Tab($id_tab);
+            $tab->delete();
+        }
+
+        return true;
     }
 
     public function uninstall()
@@ -119,7 +196,7 @@ class Mcshipping extends CarrierModule
         //Suppression des transporteurs crées
         require 'sql/uninstallCarrierCreated.php';
 
-        return parent::uninstall();
+        return parent::uninstall() && $this->unInstallTab();;
     }
 
     /**
